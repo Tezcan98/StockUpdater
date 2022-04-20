@@ -1,0 +1,42 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'StockUpdater
+
+  Sample SAM Template for StockUpdater
+
+  '
+Globals:
+  Function:
+    Timeout: 3
+Resources:
+  StockUpdaterAPI:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: StockUpdaterAPI
+      Handler: app.lambdaHandler
+      Runtime: nodejs14.x
+      Architectures:
+      - x86_64
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /decrease
+            Method: get
+    IncreaseFunction:
+      Type: AWS::Serverless::Function
+      Properties:
+        CodeUri: increase/
+        Handler: app.lambdaHandler
+        Runtime: nodejs14.x
+        Architectures:
+        - x86_64
+        Events:
+          HelloWorld:
+            Type: Api
+            Properties:
+              Path: /increase
+              Method: get
+    DecreaseFunction: null
+    Metadata:
+      SamResourceId: StockUpdaterAPI

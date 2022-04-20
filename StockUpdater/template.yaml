@@ -1,0 +1,45 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  StockUpdater
+
+  Sample SAM Template for StockUpdater
+  
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 3
+
+Resources:
+  StockUpdaterAPI:
+    Type: AWS::Serverless::Api # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+        StageName: Stocks
+    IncreaseFunction:
+      Type: AWS::Serverless::Function
+      Properties:
+          CodeUri: increase/
+          Handler: app.lambdaHandler
+          Runtime: nodejs14.x
+          Architectures:
+            - x86_64
+          Events:
+            HelloWorld:
+                Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+                Properties:
+                    Path: /increase
+                    Method: get
+    DecreaseFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: decrease/
+      Handler: app.lambdaHandler
+      Runtime: nodejs14.x
+      Architectures:
+        - x86_64
+      Events:
+        HelloWorld:
+            Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+            Properties:
+                Path: /decrease
+                Method: get
