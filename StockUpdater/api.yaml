@@ -1,0 +1,44 @@
+---
+swagger: '2.0'
+info:
+  title: !Ref AWS::StackName
+basePath: "/stocks"
+schemes:
+- "https"
+x-amazon-apigateway-api-key-source : "HEADER"
+paths:
+  "/vdp_clusters":
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: x-api-key
+        in: header
+        required: true
+        type: string
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+      x-amazon-apigateway-integration:
+        uri: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:XXXXXXXXX:function:${SAMnfeedS3Lambda.Arn}/invocations
+        responses:
+          default:
+            statusCode: "200"
+        httpMethod: "POST"
+        type: aws_proxy
+      security:
+      - api_key: []
+securityDefinitions:
+  api_key:
+    type: "apiKey"
+    name: "x-api-key"
+    in: "header"
+definitions:
+  Empty:
+    type: "object"
+    title: "Empty Schema"
+    $schema: "http://json-schema.org/draft-04/schema#"

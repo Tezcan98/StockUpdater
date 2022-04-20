@@ -14,32 +14,47 @@ Resources:
   StockUpdaterAPI:
     Type: AWS::Serverless::Api # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
-        StageName: Stocks
-    IncreaseFunction:
+        StageName: stock
+  IncreaseFunction:
       Type: AWS::Serverless::Function
       Properties:
-          CodeUri: increase/
+          CodeUri: src/increase/
           Handler: app.lambdaHandler
           Runtime: nodejs14.x
           Architectures:
             - x86_64
           Events:
-            HelloWorld:
+            inc:
                 Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
                 Properties:
+                    RestApiId: !Ref StockUpdaterAPI
                     Path: /increase
                     Method: get
-    DecreaseFunction:
+  DecreaseFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: decrease/
+      CodeUri: src/decrease/
       Handler: app.lambdaHandler
       Runtime: nodejs14.x
       Architectures:
         - x86_64
       Events:
-        HelloWorld:
+        dec:
             Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
             Properties:
+                RestApiId: !Ref StockUpdaterAPI
                 Path: /decrease
                 Method: get
+Outputs:
+  StockUpdaterAPI:
+    Description: 'API Gateway endpoint URL for Staging stage for Hello World function'
+    Value: !Sub 'https://${StockUpdaterAPI}.execute-api.${AWS::Region}.amazonaws.com/stock'
+  StockUpdaterAPIRestApiId:
+    Description: 'API Gateway ARN for Basic AWS API Gateway'
+    Value: !Ref StockUpdaterAPI
+    Export:
+      Name: StockUpdaterAPI-RestApiId
+  StockUpdaterAPIRootResourceId:
+    Value: !GetAtt StockUpdaterAPI.RootResourceId
+    Export:
+      Name: StockUpdaterAPI-RootResourceId
