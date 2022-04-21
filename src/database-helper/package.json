@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "dependencies": {
-    "mysql": "^2.18.1"
+    "serverless-postgres": "^1.10.1"
   },
   "devDependencies": {},
   "scripts": {
