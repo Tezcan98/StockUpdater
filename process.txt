@@ -6,3 +6,5 @@ admin
 
 
 serverless-postgres
+
+psql --host=iotdatabase.cuxjnv65wifa.us-east-2.rds.amazonaws.com --port=5432  --username=postgres --password=12345678 --dbname=iotdatabase

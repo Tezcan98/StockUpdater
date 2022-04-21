@@ -19,7 +19,7 @@ const ServerlessClient = require('serverless-postgres')
 const client = new ServerlessClient({
     user: 'postgres',
     host: 'iotdatabase.cuxjnv65wifa.us-east-2.rds.amazonaws.com',
-    database: 'iotstokdata',
+    database: 'iotdatabase',
     password: '12345678',
     port: '5432',
     debug: true,
