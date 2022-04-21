@@ -25,7 +25,7 @@ Resources:
             - x86_64
           Events:
             inc:
-                Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+                Type: Api 
                 Properties:
                     RestApiId: !Ref StockUpdaterAPI
                     Path: /increase
@@ -40,10 +40,40 @@ Resources:
         - x86_64
       Events:
         dec:
-            Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+            Type: Api
             Properties:
                 RestApiId: !Ref StockUpdaterAPI
                 Path: /decrease
+                Method: get  
+  LogsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/logs-page/
+      Handler: app.lambdaHandler
+      Runtime: nodejs14.x
+      Architectures:
+        - x86_64
+      Events:
+        dec:
+            Type: Api 
+            Properties:
+                RestApiId: !Ref StockUpdaterAPI
+                Path: /logs
+                Method: get
+  DatabaseFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/database-helper/
+      Handler: app.lambdaHandler
+      Runtime: nodejs14.x
+      Architectures:
+        - x86_64
+      Events:
+        dec:
+            Type: Api 
+            Properties:
+                RestApiId: !Ref StockUpdaterAPI
+                Path: /database
                 Method: get
 Outputs:
   StockUpdaterAPI:
