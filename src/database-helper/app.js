@@ -19,7 +19,7 @@ const ServerlessClient = require('serverless-postgres')
 const client = new ServerlessClient({
     user: 'postgres',
     host: 'iotdatabase.cuxjnv65wifa.us-east-2.rds.amazonaws.com',
-    database: 'iotdatabase',
+    database: 'postgres',
     password: '12345678',
     port: '5432',
     debug: true,
@@ -29,7 +29,7 @@ const client = new ServerlessClient({
 exports.lambdaHandler = async (event, context) => {
     try {
 		await client.connect();
-		const result = await client.query(`SELECT 1+1 AS result`);
+		const result = await client.query(`SELECT * from logs`);
 		await client.clean();
 		return {
 		  body: JSON.stringify({message: result.rows[0]}),
@@ -42,3 +42,5 @@ exports.lambdaHandler = async (event, context) => {
 
     return response
 };
+
+//function selec

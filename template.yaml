@@ -74,7 +74,7 @@ Resources:
             Properties:
                 RestApiId: !Ref StockUpdaterAPI
                 Path: /database
-                Method: get
+                Method: any
 Outputs:
   StockUpdaterAPI:
     Description: 'API Gateway endpoint URL for Staging stage for Hello World function'

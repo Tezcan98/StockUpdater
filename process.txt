@@ -1,10 +1,22 @@
 sam build 
 sam deploy --guided
 
-admin
-12345678
+package name = serverless-postgres
+
+psql --host=iotdatabase.cuxjnv65wifa.us-east-2.rds.amazonaws.com --port=5432  --username=postgres --password=12345678 --dbname=postgres
+
+product_code VARCHAR(50) NOT NULL,
 
 
-serverless-postgres
+CREATE TABLE IF NOT EXISTS logs (
+   device_id VARCHAR(40) NOT NULL UNIQUE, 
+   softener_amount INT NOT NULL,
+   detergent_amount INT NOT NULL,
+   time DATE DEFAULT CURRENT_TIMESTAMP,
+   request_owner VARCHAR(12) NOT NULL
+);
+\dt
+\d logs
 
-psql --host=iotdatabase.cuxjnv65wifa.us-east-2.rds.amazonaws.com --port=5432  --username=postgres --password=12345678 --dbname=iotdatabase
+INSERT INTO logs(device_id, softener_amount, detergent_amount, request_owner) VALUES ('WG_WM_562', 70, 150, 'PORTAL')
+
