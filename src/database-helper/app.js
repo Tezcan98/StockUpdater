@@ -26,21 +26,65 @@ const client = new ServerlessClient({
     delayMs: 3000,
 });
 
+function get_detergent_amount(device_id) {
+  await client.connect();
+  const result = await client.query(`SELECT detergent_amount from logs where device_id = ${device_id}`);
+  await client.clean();
+  if (result.rows.length == 0) {
+    return -1;
+  }
+  return result.rows[0].detergent_amount;
+}
+
+function get_softener_amount(device_id) {
+  await client.connect();
+  const result = await client.query(`SELECT softener_amount from logs where device_id = ${device_id}`);
+  await client.clean();
+
+  if (result.rows.length == 0) { 
+    return -1;
+  } 
+  return result.rows[0].softener_amount;
+}
+
+
 exports.lambdaHandler = async (event, context) => {
     try {
-		await client.connect();
-		const result = await client.query(`SELECT * from logs`);
-		await client.clean();
-		return {
-		  body: JSON.stringify({message: result.rows[0]}),
-		  statusCode: 200
-		}
+		
+        // event.body is empty mean is request come from iot device
+      if (event.body == null || event.body == '') { 
+
+
+          // await client.connect();
+          // ????
+          // const result = await client.query('INSERT INTO logs(device_id, softener_amount, detergent_amount, request_owner) * from logs VALUES(' + postrequest.device_id + ',' + postrequest.softener_amount + ',' + postrequest.detergent_amount + ', portal));)');
+          // await client.clean();
+          return
+      }
+    
+      postrequest = JSON.parse(event.body)
+      if (postrequest.operation == "insert") {
+        // not given value will be retieved from database. ex: portal-url/WG_WM_1245… /softener?amount=200 request, detergent will be retieved from database as last value 
+        postrequest.softener_amount == -1 ? postrequest.softener_amount =  get_softener_amount(postrequest.device_id) : postrequest.deterent_amount = get_detergent_amount(postrequest.device_id); 
+        await client.connect();
+        const result = await client.query('INSERT INTO logs(device_id, softener_amount, detergent_amount, request_owner) * from logs VALUES(' + postrequest.device_id + ',' + postrequest.softener_amount + ',' + postrequest.detergent_amount + ', portal));)');
+        await client.clean();
+      }
+      else if (postrequest.operation == "retrieve") {
+        await client.connect();
+        const result = await client.query(`SELECT * from logs`);
+        await client.clean();
+      }
+
+	
+      return {
+        body: JSON.stringify({message: result.rows[0]}),
+        statusCode: 200
+      }
     } catch (err) {
         console.log(err);
         return err;
-    }
-
-    return response
+    }        
 };
 
 //function selec

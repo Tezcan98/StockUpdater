@@ -2,12 +2,13 @@ let response;
 
 const https = require('https');
 
+
 function postRequest(body) {
   const options = {
-    hostname: 'https://44jadrt1yj.execute-api.us-east-2.amazonaws.com',
+    hostname: 'hk0aff9ydd.execute-api.us-east-2.amazonaws.com',
     path: '/Stage/database',
     method: 'POST',
-    port: 80, // 👈️ replace with 80 for HTTP requests  443
+    port: 443, 
     headers: {
       'Content-Type': 'application/json',
     },
@@ -43,30 +44,34 @@ function postRequest(body) {
 
 
 exports.lambdaHandler = async (event, context) => {
-    try {
-        // const ret = await axios(url);
-		//console.log("event", event);
-		//console.log("context", context);
+  try {
+    // const ret = await axios(url);
+		console.log("event", event);
+		console.log("context", context);
 		
-		parameters = event.queryStringParameters; 
-		
+		amount = event.queryStringParameters; 
+		paths = event.path.split('/');
+		device_id = paths[2];
+		detergent_amount = softener_amount = -1;  // -1 means data that not be given will be retieved from database as last value
+		paths[3] == 'softener' ? softener_amount = amount :  detergent_amount = amount 
 		
 		const result = await postRequest({
-		  device_id: 'WG_WM_562',
-		  softener_amount: 70,
-		  detergent_amount : 150
-		});
+		  operation : 'insert' ,
+		  device_id: device_id,
+		  softener_amount : softener_amount,
+		  detergent_amount : detergent_amount
+  });
 	
-		console.log('result is: 👉️', result);
-		
-        response = {
-            'statusCode': 200,
-             body: JSON.stringify(result),
-        }
-    } catch (err) {
-        console.log(err);
-        return err;
-    }
+  console.log('result is: 👉️', result);
+  
+  response = {
+      'statusCode': 200,
+        body: JSON.stringify(result),
+  }
+  } catch (err) {
+      console.log(err);
+      return err;
+  }
 
-    return response
+  return response
 };
