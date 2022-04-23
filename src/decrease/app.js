@@ -44,25 +44,24 @@ function postRequest(body) {
 
 
 exports.lambdaHandler = async (event, context) => {
+  console.log("/*/*/*/event", event);
+  console.log("//*/*/*/context", context);
+  let result;
   try {
     // const ret = await axios(url);
-		console.log("event", event);
-		console.log("context", context);
-		
-		amount = event.queryStringParameters; 
+		amount = event.queryStringParameters.amount;  
 		paths = event.path.split('/');
-		device_id = paths[2];
+		device_id = event.pathParameters.deviceID;
 		detergent_amount = softener_amount = -1;  // -1 means data that not be given will be retieved from database as last value
-		paths[3] == 'softener' ? softener_amount = amount :  detergent_amount = amount 
+		event.pathParameters.productType == 'softener' ? softener_amount = amount :  detergent_amount = amount // determine which one is given
 		
-		const result = await postRequest({
-		  operation : 'insert' ,
+		result = await postRequest({
+		  operation : "decrease",
 		  device_id: device_id,
 		  softener_amount : softener_amount,
 		  detergent_amount : detergent_amount
   });
-	
-  console.log('result is: 👉️', result);
+	 
   
   response = {
       'statusCode': 200,

@@ -9,7 +9,8 @@ product_code VARCHAR(50) NOT NULL,
 
 
 CREATE TABLE IF NOT EXISTS logs (
-   device_id VARCHAR(40) NOT NULL UNIQUE, 
+   record_id SERIAL  PRIMARY KEY,
+   device_id VARCHAR(40) NOT NULL, 
    softener_amount INT NOT NULL,
    detergent_amount INT NOT NULL,
    time DATE DEFAULT CURRENT_TIMESTAMP,
