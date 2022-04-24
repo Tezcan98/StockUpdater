@@ -27,13 +27,9 @@ const client = new ServerlessClient({
 });
 
 async function get_detergent_amount(device_id) {
-  
-  console.log("--************sdf3333332--->>>");
   await client.connect();
-  const result = await client.query("SELECT detergent_amount from logs where detergen_amount <> -1 and device_id = '${device_id}' ORDER BY record_id dec limit 1; ");
+  const result = await client.query("SELECT detergent_amount from decrease_logs where detergen_amount <> -1 and device_id = '${device_id}' ORDER BY record_id dec limit 1; ");
   await client.clean();
-  console.log("-- 👉️ 👉️ 👉️ 👉️***sorun burda mı ?'?'?");
-
   if (result.rows.length == 0) {
     return -1;
   }
@@ -41,11 +37,9 @@ async function get_detergent_amount(device_id) {
 }
 
 async function get_softener_amount(device_id) {
-   
   await client.connect();
-  const result = await client.query("SELECT softener_amount from logs where softener_amount <> -1 and device_id = '${device_id}' ORDER BY record_id dec limit 1;");
+  const result = await client.query("SELECT softener_amount from decrease_logs where softener_amount <> -1 and device_id = '${device_id}' ORDER BY record_id dec limit 1;");
   await client.clean();
-
   if (result.rows.length == 0) { 
     return -1;
   } 
@@ -56,26 +50,18 @@ async function get_softener_amount(device_id) {
 exports.lambdaHandler = async (event, context) => { 
   console.log("/*/*/*/event", event);
     try { 
-        // event.body is empty mean is request come from iot device
-      let result; 
-      if (event.body == null || event.body == '') { 
-          // TODO: search get data from İOT RULE
-
-          // await client.connect();
-          // ????
-          // const result = await client.query('INSERT INTO logs(device_id, softener_amount, detergent_amount, request_owner) * from logs VALUES(' + postrequest.device_id + ',' + postrequest.softener_amount + ',' + postrequest.detergent_amount + ', portal));)');
-          // await client.clean();
-          return
-      }
-    
+      let result;  
       var postrequest = JSON.parse(event.body)
       if (postrequest.operation == "decrease") {
         // not given value will be retieved from database. ex: portal-url/WG_WM_1245… /softener?amount=200 request, detergent will be retieved from database as last value 
         postrequest.softener_amount == -1 ? postrequest.softener_amount =  get_softener_amount(postrequest.device_id) : postrequest.deterent_amount = get_detergent_amount(postrequest.device_id); 
         
         await client.connect();
-        result = await client.query("INSERT INTO logs(device_id, softener_amount, detergent_amount, request_owner) VALUES('" + postrequest.device_id + "','" + postrequest.softener_amount + "','" + postrequest.detergent_amount + "', 'portal');");
+        result = await client.query("INSERT INTO decrease_logs(device_id, softener_amount, detergent_amount, request_owner) VALUES('" + postrequest.device_id + "','" + postrequest.softener_amount + "','" + postrequest.detergent_amount + "', '"+ postrequest.request_owner +"' );");
         await client.clean();
+      }
+      else if (postrequest.operation == "increase") {
+      
       }
       else if (postrequest.operation == "retrieve") {
         await client.connect();

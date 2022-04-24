@@ -44,33 +44,38 @@ function postRequest(body) {
 
 
 exports.lambdaHandler = async (event, context) => {
-  console.log("/*/*/*/event", event);
-  console.log("//*/*/*/context", context);
-  let result;
+  let device_id, detergent_amount, softener_amount, request_owner; 
   try {
-    // const ret = await axios(url);
-		amount = event.queryStringParameters.amount;  
-		paths = event.path.split('/');
-		device_id = event.pathParameters.deviceID;
-		detergent_amount = softener_amount = -1;  // -1 means data that not be given will be retieved from database as last value
-		event.pathParameters.productType == 'softener' ? softener_amount = amount :  detergent_amount = amount // determine which one is given
-		
-		result = await postRequest({
+    // event.device_id is not empty's mean is request come from iot device
+    if (event.device_id != null || event.device_id != '') {
+        device_id =  event.device_id;
+        detergent_amount = event.detergent_amount;
+        softener_amount = event.softener_amount; 
+        request_owner = "DEVICE";
+    } 
+    else {
+      amount = event.queryStringParameters.amount;  
+      paths = event.path.split('/');
+      device_id = event.pathParameters.deviceID;
+      detergent_amount = softener_amount = -1;  // -1 means data that not be given will be retieved from database as last value
+      event.pathParameters.productType == 'softener' ? softener_amount = amount :  detergent_amount = amount // determine which one is given
+      request_owner = "PORTAL";
+    }
+		let result = await postRequest({
 		  operation : "decrease",
 		  device_id: device_id,
 		  softener_amount : softener_amount,
-		  detergent_amount : detergent_amount
-  });
-	 
-  
+		  detergent_amount : detergent_amount,
+      request_owner : request_owner
+    });
   response = {
       'statusCode': 200,
         body: JSON.stringify(result),
   }
+  return response
   } catch (err) {
       console.log(err);
       return err;
   }
-
-  return response
+ 
 };

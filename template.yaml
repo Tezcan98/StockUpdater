@@ -82,7 +82,7 @@ Resources:
          TopicRulePayload:
            AwsIotSqlVersion: '2016-03-23'
            RuleDisabled: false
-           Sql: "SELECT device_id, detergent, softener FROM 'iotdb' WHERE softener < 140 or detergent < 200"
+           Sql: "SELECT device_id, detergent_amount, softener_amount FROM 'iot_invoke' WHERE softener_amount<140 OR detergent_amount<200"
            Actions:
              - Lambda:
                  FunctionArn: { "Fn::GetAtt": ['DecreaseFunction', 'Arn']}
@@ -93,7 +93,7 @@ Resources:
          TopicRulePayload:
            AwsIotSqlVersion: '2016-03-23'
            RuleDisabled: false
-           Sql: "SELECT device_id, detergent, softener FROM 'iotdb' WHERE softener > 140 and detergent > 200"
+           Sql: "SELECT device_id, detergent_amount, softener_amount FROM 'iot_invoke' WHERE softener_amount>140 AND detergent_amount>200"
            Actions:
              - Lambda:
                  FunctionArn: { "Fn::GetAtt": ['IncreaseFunction', 'Arn']}
