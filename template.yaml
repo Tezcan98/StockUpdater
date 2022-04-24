@@ -28,7 +28,7 @@ Resources:
                 Type: Api 
                 Properties:
                     RestApiId: !Ref StockUpdaterAPI
-                    Path: /increase
+                    Path: /increase/{deviceID}/{productInfos}
                     Method: get
   DecreaseFunction:
     Type: AWS::Serverless::Function

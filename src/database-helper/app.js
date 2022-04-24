@@ -55,13 +55,14 @@ exports.lambdaHandler = async (event, context) => {
       if (postrequest.operation == "decrease") {
         // not given value will be retieved from database. ex: portal-url/WG_WM_1245… /softener?amount=200 request, detergent will be retieved from database as last value 
         postrequest.softener_amount == -1 ? postrequest.softener_amount =  get_softener_amount(postrequest.device_id) : postrequest.deterent_amount = get_detergent_amount(postrequest.device_id); 
-        
         await client.connect();
         result = await client.query("INSERT INTO decrease_logs(device_id, softener_amount, detergent_amount, request_owner) VALUES('" + postrequest.device_id + "','" + postrequest.softener_amount + "','" + postrequest.detergent_amount + "', '"+ postrequest.request_owner +"' );");
         await client.clean();
       }
       else if (postrequest.operation == "increase") {
-      
+        await client.connect();
+        result = await client.query("INSERT INTO increase_logs(device_id, product_code, product_type, product_id, vendor_id, request_owner) VALUES('" + postrequest.device_id + "','" + postrequest.product_code + "','" + postrequest.product_type + "','" + postrequest.product_id + "','" + postrequest.vendor_id + "', '"+ postrequest.request_owner +"' );");
+        await client.clean();
       }
       else if (postrequest.operation == "retrieve") {
         await client.connect();
@@ -78,4 +79,4 @@ exports.lambdaHandler = async (event, context) => {
     }        
 };
 
-//function selec
+//function selec  

@@ -1,5 +1,3 @@
-let response;
-
 const https = require('https');
 
 
@@ -54,8 +52,7 @@ exports.lambdaHandler = async (event, context) => {
         request_owner = "DEVICE";
     } 
     else {
-      amount = event.queryStringParameters.amount;  
-      paths = event.path.split('/');
+      amount = event.queryStringParameters.amount;
       device_id = event.pathParameters.deviceID;
       detergent_amount = softener_amount = -1;  // -1 means data that not be given will be retieved from database as last value
       event.pathParameters.productType == 'softener' ? softener_amount = amount :  detergent_amount = amount // determine which one is given

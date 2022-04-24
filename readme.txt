@@ -13,7 +13,17 @@ CREATE TABLE IF NOT EXISTS decrease_logs (
    device_id VARCHAR(40) NOT NULL, 
    softener_amount INT NOT NULL,
    detergent_amount INT NOT NULL,
-   time DATETIME DEFAULT now(),
+   time TIMESTAMP DEFAULT now(),
+   request_owner VARCHAR(12) NOT NULL
+);
+CREATE TABLE IF NOT EXISTS increase_logs (
+   record_id SERIAL  PRIMARY KEY,
+   device_id VARCHAR(40) NOT NULL, 
+   product_code VARCHAR(50) NOT NULL,
+   product_type VARCHAR(16) NOT NULL,
+   product_id VARCHAR(16) NOT NULL,
+   vendor_id VARCHAR(16) NOT NULL,
+   time TIMESTAMP DEFAULT now(),
    request_owner VARCHAR(12) NOT NULL
 );
 \dt
